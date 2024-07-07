@@ -7,28 +7,24 @@
     <!-- AdminLTE -->
     <link rel="stylesheet" href="/adminlte/dist/css/adminlte.min.css">
     <script>
-		function deleteBoard(boardId) {
-		    if (confirm('Are you sure you want to delete this board?')) {
-		        fetch(`/boards/${boardId}`, {
-		            method: 'DELETE',
-		            headers: {
-		                'Content-Type': 'application/json',
-		                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
-		            }
-		        })
-		        .then(response => {
-		            if (response.ok) {
-		                window.location.reload();
-		            } else {
-		                alert('Failed to delete the board.');
-		            }
-		        });
-		    }
-		}
-
+        function deleteBoard(boardId) {
+            if (confirm('Are you sure you want to delete this board?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/boards/${boardId}`;
+                
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                
+                form.appendChild(methodInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
     </script>
-	<meta name="_csrf" th:content="${_csrf.token}"/>
-	    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -97,7 +93,6 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <a class="btn btn-primary mb-3" th:href="@{/}">Home</a>
                         <a class="btn btn-primary mb-3" th:href="@{/boards/new}">New Board</a>
                         <table class="table table-bordered table-hover">
                             <thead>
